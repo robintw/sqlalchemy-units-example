@@ -1,3 +1,8 @@
+#
+# Example code from 'Pint + SQLAlchemy = Unit consistency and enforcement in your database' poster
+# at PyData Global 2020
+# by Robin Wilson (robin@rtwilson.com)
+#
 import os
 
 from sqlalchemy import create_engine
@@ -6,12 +11,15 @@ from dateutil.parser import parse
 
 from model_basic import Base, ShipState
 
+# Remove the db file if it already exists
 if os.path.exists("test.sqlite"):
     os.remove("test.sqlite")
 
+# Create a SQLite engine to connect to the database, and create the tables
 engine = create_engine("sqlite:///test.sqlite")
 Base.metadata.create_all(engine)
 
+# Create a session object
 Session = sessionmaker(bind=engine)
 session = Session()
 

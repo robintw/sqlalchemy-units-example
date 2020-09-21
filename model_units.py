@@ -1,14 +1,21 @@
+#
+# Example code from 'Pint + SQLAlchemy = Unit consistency and enforcement in your database' poster
+# at PyData Global 2020
+# by Robin Wilson (robin@rtwilson.com)
+#
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import DateTime, Integer, Column
 from sqlalchemy.dialects.sqlite import REAL
 from sqlalchemy.ext.hybrid import hybrid_property
 from pint import UnitRegistry
 
-
+# As usual, create the 'Base' object for all SQLAlchemy models to inherit from
 Base = declarative_base()
+# Create the 'unit registry' which holds all the details of the pint units
 unit_registry = UnitRegistry()
 
 
+# This class has got a bit more complicated this time - but we'll go through it step by step
 class ShipState(Base):
     __tablename__ = "ShipStates"
 
@@ -32,7 +39,7 @@ class ShipState(Base):
             return None
         else:
             # They are stored in m/s in the database (though just as a float)
-            # so we just assign the units here
+            # so we just assign the units here to the value we got out of the database
             return self._speed * (unit_registry.metre / unit_registry.second)
 
     @speed.setter
@@ -66,7 +73,7 @@ class ShipState(Base):
         # The SQLAlchemy query engine has to know how to convert whatever is returned here
         # into something that the db backend understands, so here we just return a float value
         # in metres per second (just as stored in the db). We could do conversions here to return values
-        # in a different unit to the value stored in the database
+        # in a different unit to the value stored in the database.
         return self._speed
 
     ####################################################
